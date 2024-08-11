@@ -14,4 +14,9 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class CoursesCardListComponent {
 
+  courses = input.required<Course[]>();
+
+  constructor() {
+
+  }
 }

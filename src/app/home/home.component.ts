@@ -21,4 +21,42 @@ import {toObservable, toSignal, outputToObservable, outputFromObservable} from "
 })
 export class HomeComponent {
 
+  #courses = signal<Course[]>([]);
+
+  coursesService = inject(CoursesService);
+
+  beginnerCourses = computed(() => {
+    const courses = this.#courses();
+    return courses.filter(course => course.category === "BEGINNER")
+  });
+
+  advancedCourses = computed(() => {
+    const courses = this.#courses();
+    return courses.filter(course => course.category === "ADVANCED")
+  });
+
+
+  constructor() {
+    effect(() => {
+      console.log('Beginner courses: ' + this.beginnerCourses);
+      console.log('Advanced courses: ' + this.advancedCourses);
+    })
+   this.loadCourses().then(() => console.log('All course loaded ', this.#courses()));
+  }
+
+  async loadCourses() {
+    
+    try {
+      const courses = await this.coursesService.loadAllCourses();
+      this.#courses.set(courses);
+    }
+    catch(err) {
+      alert('error occured');
+      console.error(err);
+    }
+
+
+
+  }
+
 }
