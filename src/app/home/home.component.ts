@@ -48,7 +48,7 @@ export class HomeComponent {
     
     try {
       const courses = await this.coursesService.loadAllCourses();
-      this.#courses.set(courses);
+      this.#courses.set(courses.sort(sortCoursesBySeqNo));
     }
     catch(err) {
       alert('error occured');
