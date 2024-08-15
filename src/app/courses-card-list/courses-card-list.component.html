@@ -11,10 +11,10 @@
         <button class="btn">
             VIEW COURSE
         </button>
-        <button class="btn">
+        <button class="btn" (click)="editCourseDialog(course)">
             EDIT COURSE
         </button>
-        <img class="delete" src="/assets/icons/delete.svg">
+        <img class="delete" src="/assets/icons/delete.svg" (click)="onCourseDeleted(course)">
       </div>
     </div>
     }

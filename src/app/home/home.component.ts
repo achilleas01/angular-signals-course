@@ -7,6 +7,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {MessagesService} from "../messages/messages.service";
 import {catchError, from, throwError} from "rxjs";
 import {toObservable, toSignal, outputToObservable, outputFromObservable} from "@angular/core/rxjs-interop";
+import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.component';
 
 @Component({
   selector: 'home',
@@ -24,6 +25,8 @@ export class HomeComponent {
   #courses = signal<Course[]>([]);
 
   coursesService = inject(CoursesService);
+
+  dialog = inject(MatDialog);
 
   beginnerCourses = computed(() => {
     const courses = this.#courses();
@@ -54,9 +57,49 @@ export class HomeComponent {
       alert('error occured');
       console.error(err);
     }
+  }
 
+  onCourseUpdated(updatedCourse:Course) {
+    const courses = this.#courses();
 
+    const newCourses = courses.map(course => {
+      return course.id === updatedCourse.id? updatedCourse :course
+    });
 
+    this.#courses.set(newCourses);
+  }
+
+  async onCourseDeleted(courseId: string) {
+    try {
+      await this.coursesService.deleteCourse(courseId);
+
+      const courses = this.#courses();
+      const newCourses = courses.filter(
+        course => course.id != courseId)
+      
+        this.#courses.set(newCourses);
+
+    }
+    catch(err) {
+      console.log(err);
+      alert('Error deleting course');
+    }
+  }
+
+  async onAddCourse() {
+    const newCourse = await openEditCourseDialog(
+      this.dialog, 
+      {
+        mode: 'create',
+        title: "Create New Course"
+      });
+
+      const newCourses = [
+        ...this.#courses(),
+        newCourse      
+      ]
+
+      this.#courses.set(newCourses);
   }
 
 }
