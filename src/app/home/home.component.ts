@@ -8,6 +8,7 @@ import {MessagesService} from "../messages/messages.service";
 import {catchError, from, throwError} from "rxjs";
 import {toObservable, toSignal, outputToObservable, outputFromObservable} from "@angular/core/rxjs-interop";
 import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.component';
+import { LoadingService } from '../loading/loading.service';
 
 @Component({
   selector: 'home',
@@ -25,6 +26,8 @@ export class HomeComponent {
   #courses = signal<Course[]>([]);
 
   coursesService = inject(CoursesService);
+
+  loadingService = inject(LoadingService);
 
   dialog = inject(MatDialog);
 
@@ -50,12 +53,18 @@ export class HomeComponent {
   async loadCourses() {
     
     try {
+      this.loadingService.loadingOn();
       const courses = await this.coursesService.loadAllCourses();
       this.#courses.set(courses.sort(sortCoursesBySeqNo));
     }
     catch(err) {
+      this.loadingService.loadingOff();
       alert('error occured');
       console.error(err);
+    }
+    finally {
+      this.loadingService.loadingOff();
+
     }
   }
 
