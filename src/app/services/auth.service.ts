@@ -16,6 +16,8 @@ export class AuthService {
 
    user = this.#userSignal.asReadonly();
 
+   router = inject(Router);
+
    isLoggedIn = computed(() => !!this.user());
 
    http = inject(HttpClient);
@@ -29,6 +31,12 @@ export class AuthService {
     const user = await firstValueFrom(login$);
     this.#userSignal.set(user);
     return user;
-
    }
+
+   async logout() {
+    this.#userSignal.set(null);
+    await this.router.navigateByUrl('/login');
+   }
+
+
 }
