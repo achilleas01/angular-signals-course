@@ -21,6 +21,23 @@ export class AuthService {
    isLoggedIn = computed(() => !!this.user());
 
    http = inject(HttpClient);
+
+   constructor() {
+    effect(() => {
+      const user = this.user();
+      if(user) {
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+      }
+    })
+   }
+
+   loadUserFromLocalStorage() {
+    const json = localStorage.getItem(USER_STORAGE_KEY);
+    if (json) {
+      const user = JSON.parse(json);
+      this.#userSignal.set(user);
+    }
+   }
    
    async login(email: string, password: string): Promise<User> {
 
@@ -34,6 +51,7 @@ export class AuthService {
    }
 
    async logout() {
+    localStorage.removeItem(USER_STORAGE_KEY);
     this.#userSignal.set(null);
     await this.router.navigateByUrl('/login');
    }
