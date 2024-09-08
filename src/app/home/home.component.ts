@@ -29,6 +29,8 @@ export class HomeComponent {
 
   loadingService = inject(LoadingService);
 
+  messageService = inject(MessagesService);
+
   dialog = inject(MatDialog);
 
   beginnerCourses = computed(() => {
@@ -57,8 +59,12 @@ export class HomeComponent {
       this.#courses.set(courses.sort(sortCoursesBySeqNo));
     }
     catch(err) {
-      alert('error occured');
-      console.error(err);
+      this.messageService.showMessage(
+        'Error loading courses',
+        "error"
+      )
+      // alert('error occured');
+      // console.error(err);
     }
   }
 
