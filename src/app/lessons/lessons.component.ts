@@ -14,6 +14,30 @@ import {LessonDetailComponent} from "./lesson-detail/lesson-detail.component";
 })
 export class LessonsComponent {
 
+  mode = signal<'master' | 'detail'>("master");
+
+  lessons = signal<Lesson[]>([]);
+
+  selectedLesson = signal<Lesson | null> (null);
+
+  lessonsService = inject(LessonsService);
+
+  //signal query
+   searchInput = viewChild.required<ElementRef>('search');
+
+   async onSearch() {
+    const query = this.searchInput()?.nativeElement.value;
+    console.log('search query', query);
+
+    const results = await this.lessonsService.loadLessons({query});
+    this.lessons.set(results);
+  
+  }
+
+  onLessonSelected(lesson: Lesson) {
+    this.mode.set("detail");
+    this.selectedLesson.set(lesson);
+  }
 
 
 
