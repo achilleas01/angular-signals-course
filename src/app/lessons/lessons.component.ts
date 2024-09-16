@@ -39,6 +39,16 @@ export class LessonsComponent {
     this.selectedLesson.set(lesson);
   }
 
+  onCancel() {
+    this.mode.set("master");
+  }
+
+  onLessonUpdated(lesson: Lesson) {
+    this.lessons.update(lessons => 
+      lessons.map(l => l.id === lesson.id ? lesson : l)
+    );
+  }
+
 
 
 }
